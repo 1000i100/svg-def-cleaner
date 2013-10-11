@@ -8,8 +8,8 @@
     "optimisation",
     "minification"
   ],
-  "version": "0.1",
-  "license" : "BSD",
+  "version": "0.0.1",
+  "license": "BSD",
   "repository": {
     "type": "git",
     "url": "git://github.com/GammaNu/svg-def-cleaner.git"
@@ -18,10 +18,17 @@
   "main": "./bin/svg-def-cleaner.js",
   "bin": "./bin/svg-def-cleaner.js",
   "dependencies": {
-    "xml2js": "~0.2.8",
+    "xml2js": "~0.2.8"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "jasmine-node": "~1.11.0"
+    "colors": "~0.6.2",
+    "watch": "~0.8.0",
+    "mocha": "~1.13.0",
+    "chai": "~1.8.0",
+    "glob": "~3.2.6",
+    "q": "~0.9.7",
+    "mkdirp": "~0.3.5",
+    "rimraf": "~2.2.2"
   }
 }
