@@ -1,4 +1,5 @@
 fs              = require 'fs'
+ps              = require 'path'
 {exec,spawn}    = require 'child_process'
 util            = require 'util'
 watch           = require 'watch'
@@ -52,12 +53,12 @@ testTask = (options)->
     require testConfigFile
     mocha = new Mocha
     mocha.reporter mochaReporter
-    
     testFilesPattern = specCompiledDir+'**/*.js'
     util.log 'Liste les fichiers répondant au motif '.cyan + testFilesPattern if debug
     glob testFilesPattern, (err, fileList)->
         for file in fileList
             util.log 'spec : '.cyan + file if debug
+            delete require.cache[ps.resolve('.', file)] # chemin absolue nécessaire
             mocha.addFile file
         util.log 'Execution des tests'.cyan if verbose
         runner = mocha.run ->
