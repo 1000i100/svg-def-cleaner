@@ -1,3 +1,4 @@
+###
 fs = require 'fs',
 xml2js = require 'xml2js'
 
@@ -6,3 +7,8 @@ fs.readFile __dirname + '/foo.xml', (err, data) ->
   parser.parseString data, (err, result) ->
     console.dir result
     console.log 'Done.'
+###
+
+loadFile = (fileName)->
+	console.log fileName
+	
