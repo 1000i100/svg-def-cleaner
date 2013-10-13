@@ -12,12 +12,15 @@ rimraf          = require 'rimraf'
 require 'colors'
 
 #config
+fichierATester = 'svg-def-cleaner'
+
 appSourceDir    = 'src/'
 appCompiledDir  = 'bin/'
 specDir         = 'test/spec/'
 specCompiledDir = 'bin/test/'
 testConfigFile  = './test/config.coffee'
-mochaReporter   = 'dot' #"progress"
+oneShotReporter = 'nyan' #"progress"
+watchReporter   = 'min' #"dot"
 runTestDelay    = 500 # latence entre la détection d'un fichier modifié et l'execution des test (pour éviter les test en cascade lors des enregistrement de masse)
 
 # internal globals
@@ -46,13 +49,18 @@ watchTask = (options)->
 task "test", "exécute les tests".cyan, (options)->
     testTask options
 
-testTask = (options)->
+testTask = (options, reporter=oneShotReporter)->
     q = Q.defer()
     setGlobalOptions options
     util.log 'Préparation des tests'.cyan if debug
     require testConfigFile
+
+    # TODO: arboressance applicative à inclure pour lancer les test dessus.
+    delete require.cache[ps.resolve('.', appCompiledDir+fichierATester+'.js')] # chemin absolue nécessaire
+    require './'+appCompiledDir+fichierATester+'.js'
+
     mocha = new Mocha
-    mocha.reporter mochaReporter
+    mocha.reporter reporter
     testFilesPattern = specCompiledDir+'**/*.js'
     util.log 'Liste les fichiers répondant au motif '.cyan + testFilesPattern if debug
     glob testFilesPattern, (err, fileList)->
@@ -226,4 +234,4 @@ rmRecursive = (folder)->
 runTestIfChange = ->
     if untestedChange
         untestedChange = false
-        testTask()
+        testTask null, watchReporter
