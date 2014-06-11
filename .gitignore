@@ -3,3 +3,5 @@ bin
 npm-debug.log
 .idea
 Thumbs.db
+test/demoFile/writeTest.txt
+test/demoFile/filter-matrix-transform-generated.svg

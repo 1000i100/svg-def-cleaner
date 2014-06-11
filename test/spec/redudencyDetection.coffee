@@ -3,15 +3,6 @@ describe 'détection de redondance', ->
 	it "extrait le contenu de la balise <defs>", ->
 		output = sdc.getDefs 'before<defs>in<side/>\n</defs><after>content</after>'
 		output.should.equal 'in<side/>\n'
-	it "liste les balises sans enfant", ->
-		output = sdc.listNodesWithoutChild '<a>b<a>a</a></a>b<a id="b"></a><a id="c"><a>ça</a></a>'
-		output.should.deep.equal ['<a>a</a>','<a id="b"></a>','<a>ça</a>']
-		# vérifie qu'il n'y a pas de surprise si un seul résultat est trouvé.
-		output = sdc.listNodesWithoutChild '<a>b<a>a</a></a>'
-		output.should.deep.equal ['<a>a</a>']
-	it "retourne la première balise sans enfant", ->
-		output = sdc.getFirstNodeWithoutChild '<a>b<a>a</a></a>b<a id="b"></a><a id="c"><a>ça</a></a>'
-		output.should.equal '<a>a</a>'
 
 	describe "liste les balises dotées d'un attribut id (et le contenu de ces balies)", ->
 		it "quel que soit l'imbrication", ->

@@ -1,9 +1,15 @@
 fs = require 'fs'
+xpath = require 'xpath'
+domParser = require('xmldom').DOMParser
+
 encoding = 'utf8'
 
 scope = exports ? this
 scope.main = (sourceFile, targetFile) ->
-	'TODO'
+	sourceContent = scope.loadFile sourceFile
+	cleanedContent = scope.cleanSvgContent sourceContent
+	scope.writeFile targetFile, cleanedContent.replace /\r?\n|\r/g, ''
+
 
 scope.loadFile = (fileName)->
 	fileContent = fs.readFileSync fileName
@@ -15,10 +21,10 @@ scope.removeId = (string)-> string.replace /id="([^"]*)"/, 'id=""'
 scope.injectId = (id, string)-> string.replace /id=""/, 'id="'+id+'"'
 scope.removeDuplicateDef = (duplicateString, fileContent)-> fileContent.replace duplicateString, ''
 
-#scope.listIdNodes = (string)-> string.match /<[^ >]+\1 [^>]*id=[^>]*>[^<]*((<[^>]+>)*[^<]*)<\/\1>/gm
-scope.listIdNodes = (string)-> string.match /<([^ >]+\1) [^>]*id=[^>]*>[\s\S]*<\/\1>/gm
-scope.getFirstNodeWithoutChild  = (string)-> string.match(/<([^ >]+\1)( [^>]+)*>[^<]*<\/\1>/m)[0]
-scope.listNodesWithoutChild  = (string)-> string.match /<([^ >]+\1)( [^>]+)*>[^<]*<\/\1>/gm
+scope.listIdNodes = (string)->
+	domRoot = new domParser().parseFromString('<defs>'+string+'</defs>')
+	nodes = xpath.select("//*[@id]", domRoot)
+	node.toString() for node in nodes
 
 scope.mapRedudency = (list)->
 	map = {}
@@ -49,7 +55,6 @@ scope.fixLink = (canonicalId, redundantId, fileContent)->
 
 scope.cleanSvgContent = (fileContent)->
 	redundancyMap = scope.cleanUnduplicated scope.mapRedudency scope.listIdNodes scope.getDefs fileContent
-	console.log(redundancyMap)
 	for redundantDef, occurrence of redundancyMap
 		do (redundantDef, occurrence)->
 			canonicalId = occurrence.shift()
@@ -58,5 +63,3 @@ scope.cleanSvgContent = (fileContent)->
 					fileContent = scope.removeDuplicateDef scope.injectId(redundantId, redundantDef), fileContent
 					fileContent = scope.fixLink(canonicalId, redundantId, fileContent)
 	return fileContent
-
-#scope.cleanSvgContent	'<defs><b id="b">b</b><b id="ccc">b</b><d id="d">d</d><d id="e">d</d></defs><osef xlink:href="#b"/><osef xlink:href="#ccc" style="background:url(#ccc) #ccc" filter="url(#ccc)'

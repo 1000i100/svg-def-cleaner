@@ -1,4 +1,3 @@
-###
 sdc = require '../../bin/svg-def-cleaner'
 describe "test d'intégration", ->
 	it "nettoie les données dupliquées", ->
@@ -14,4 +13,3 @@ describe "test d'intégration", ->
 		cleanedContent = sdc.loadFile targetFile
 		controlContent = sdc.loadFile controlFile
 		cleanedContent.should.equal controlContent
-###

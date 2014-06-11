@@ -18,17 +18,18 @@
   "main": "./bin/svg-def-cleaner.js",
   "bin": "./bin/svg-def-cleaner.js",
   "dependencies": {
-    "xml2js": "~0.2.8"
+    "xmldom": "^0.1.19",
+    "xpath": "0.0.6"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "colors": "~0.6.2",
-    "watch": "~0.8.0",
-    "mocha": "~1.13.0",
-    "chai": "~1.8.0",
-    "glob": "~3.2.6",
-    "q": "~0.9.7",
-    "mkdirp": "~0.3.5",
-    "rimraf": "~2.2.2"
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "glob": "^4.0.2",
+    "mkdirp": "^0.5.0",
+    "mocha": "^1.20.1",
+    "q": "^2.0.2",
+    "watch": "^0.10.0",
+    "colors": "*",
+    "rimraf": "*"
   }
 }
