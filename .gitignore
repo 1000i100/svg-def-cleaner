@@ -1,3 +1,5 @@
 node_modules
 bin
 npm-debug.log
+.idea
+Thumbs.db

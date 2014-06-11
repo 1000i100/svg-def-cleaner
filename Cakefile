@@ -57,7 +57,7 @@ testTask = (options, reporter=oneShotReporter)->
 
     # TODO: arboressance applicative à inclure pour lancer les test dessus.
     delete require.cache[ps.resolve('.', appCompiledDir+fichierATester+'.js')] # chemin absolue nécessaire
-    require './'+appCompiledDir+fichierATester+'.js'
+    #require './'+appCompiledDir+fichierATester+'.js'
 
     mocha = new Mocha
     mocha.reporter reporter
@@ -69,7 +69,7 @@ testTask = (options, reporter=oneShotReporter)->
             delete require.cache[ps.resolve('.', file)] # chemin absolue nécessaire
             mocha.addFile file
         util.log 'Execution des tests'.cyan if verbose
-        runner = mocha.run ->
+        mocha.run ->
             util.log 'Tests terminés'.cyan if verbose
             q.resolve()
     q.promise
@@ -81,6 +81,8 @@ task 'build', 'compile tous les fichiers des dossiers '.cyan + appSourceDir + ' 
 buildTask = (options)->
     q = Q.defer()
     setGlobalOptions options
+    util.log "Vous utilisez Node.js version ".cyan + process.version + ' sous '.cyan + process.platform + ' ' + process.arch if verbose
+    util.log "NODE_PATH: ".cyan + process.env.NODE_PATH
     Q.all([
         coffee2jsTree specDir, specCompiledDir
         coffee2jsTree appSourceDir, appCompiledDir

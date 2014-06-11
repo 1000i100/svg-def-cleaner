@@ -24,6 +24,6 @@ You need node.js and git then run :
 git clone git@github.com:GammaNu/svg-def-cleaner.git
 cd svg-def-cleaner
 npm install
-cake watch
+node_modules/coffee-script/bin/cake watch
 ```
 start codding !
