@@ -1,22 +1,23 @@
 {
   "author": "Millicent Billette",
-  "contributors": "Aurore Sanchez",
   "name": "svg-def-cleaner",
-  "description": "detect and merge redundant definitions in svg files for size optimisation",
+  "description": "Detect and merge redundant definitions for lighter svg files",
   "keywords": [
     "svg",
     "optimisation",
     "minification"
   ],
-  "version": "0.0.1",
-  "license": "BSD",
+  "version": "0.1.1",
+  "license": "BSD, MIT, WTFPL, CC-BY, pick what you prefer",
   "repository": {
     "type": "git",
     "url": "git://github.com/GammaNu/svg-def-cleaner.git"
   },
   "homepage": "https://github.com/GammaNu/svg-def-cleaner",
   "main": "./bin/svg-def-cleaner.js",
-  "bin": "./bin/svg-def-cleaner.js",
+  "bin": {
+    "svg-def-cleaner": "./bin/commandLineWrapper.js"
+  },
   "dependencies": {
     "xmldom": "^0.1.19",
     "xpath": "0.0.6"
@@ -31,5 +32,8 @@
     "watch": "^0.10.0",
     "colors": "*",
     "rimraf": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/GammaNu/svg-def-cleaner/issues"
   }
 }

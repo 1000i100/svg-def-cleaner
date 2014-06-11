@@ -1,7 +1,7 @@
 svg-def-cleaner
 ===============
 
-detect and merge redudent definitions for lighter svg files
+Detect and merge redundant definitions for lighter svg files
 
 How to use
 ----------
@@ -11,11 +11,20 @@ Be sure to have node.js installed on your system then :
 npm install -g svg-dev-cleaner
 ```
 
-To clean a svg file juste type :
-
+To clean a svg file juste write in your shell :
 ```
 svg-dev-cleaner inputFile.svg outputFile.svg
 ```
+
+To use it as module :
+```javascript
+var sdc = require('svg-def-cleaner');
+// string api
+var cleanedSvgString = sdc.cleanSvgContent('<xml>redundantSvg</xml>');
+// file api
+sdc.main('sourceFile.svg', 'targetFile.svg');
+```
+
 
 How to contribute
 -----------------
