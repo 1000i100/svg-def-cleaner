@@ -21,11 +21,15 @@ scope.removeId = (string)-> string.replace /id="([^"]*)"/, 'id=""'
 scope.injectId = (id, string)-> string.replace /id=""/, 'id="'+id+'"'
 scope.removeDuplicateDef = (duplicateString, fileContent)-> fileContent.replace duplicateString, ''
 
-scope.listIdNodes = (string)->
-	domRoot = new domParser().parseFromString('<defs>'+string+'</defs>')
-	nodes = xpath.select("//*[@id]", domRoot)
-	node.toString() for node in nodes
 
+scope.listNodesWithAttr = (string, attr)->
+	domRoot = new domParser().parseFromString('<root_node>'+string+'</root_node>')
+	nodes = xpath.select("//*[@"+attr+"]", domRoot)
+	node.toString() for node in nodes
+scope.listIdNodes = (string)->
+	scope.listNodesWithAttr string, 'id'
+scope.listTransformNodes = (string)->
+	scope.listNodesWithAttr string, 'transform'
 scope.mapRedudency = (list)->
 	map = {}
 	for element in list
