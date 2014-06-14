@@ -36,3 +36,10 @@ npm install
 node_modules/coffee-script/bin/cake watch
 ```
 start codding !
+
+
+RoadMap
+-------
+- factorize identical elements excepted the transformation part (one element in <defs> and <use transform> in replacement of duplicated elements)
+- factorize style attribute when possible (put them on group if all child have the same or override it)
+
