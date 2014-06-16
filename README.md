@@ -35,7 +35,7 @@ cd svg-def-cleaner
 npm install
 node_modules/coffee-script/bin/cake watch
 ```
-start codding !
+start coding !
 
 
 RoadMap

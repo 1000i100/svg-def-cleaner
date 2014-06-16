@@ -16,16 +16,22 @@ scope.loadFile = (fileName)->
 	fileContent.toString(encoding)
 scope.writeFile = (fileName, content)-> fs.writeFileSync fileName, content, {'encoding':encoding}
 scope.getDefs = (string)-> string.replace /([\s\S]*)<defs[^>]*>([\s\S]*)<\/defs>([\s\S]*)/im, '$2'
-scope.getId = (string)-> string.match(/id="([^"]*)"/)[1]
+scope.getId = (string)-> scope.getAttrValue string, 'id'
+scope.getTransformAttr = (string)-> scope.getAttrValue string, 'transform'
+scope.getAttrValue = (string,attr)->string.match(RegExp attr+'="([^"]*)"')[1]
 scope.removeId = (string)-> string.replace /id="([^"]*)"/, 'id=""'
 scope.injectId = (id, string)-> string.replace /id=""/, 'id="'+id+'"'
 scope.removeDuplicateDef = (duplicateString, fileContent)-> fileContent.replace duplicateString, ''
 
-scope.listIdNodes = (string)->
-	domRoot = new domParser().parseFromString('<defs>'+string+'</defs>')
-	nodes = xpath.select("//*[@id]", domRoot)
-	node.toString() for node in nodes
 
+scope.listNodesWithAttr = (string, attr)->
+	domRoot = new domParser().parseFromString('<root_node>'+string+'</root_node>')
+	nodes = xpath.select("//*[@"+attr+"]", domRoot)
+	node.toString() for node in nodes
+scope.listIdNodes = (string)->
+	scope.listNodesWithAttr string, 'id'
+scope.listTransformNodes = (string)->
+	scope.listNodesWithAttr string, 'transform'
 scope.mapRedudency = (list)->
 	map = {}
 	for element in list
