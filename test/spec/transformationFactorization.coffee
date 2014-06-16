@@ -5,11 +5,10 @@ describe 'factorisation des transformations', ->
 		expectedResult = ['<b transform="b">b</b>','<d transform="d"/>']
 		output = sdc.listTransformNodes inputData
 		output.should.deep.equal expectedResult
-
+	it "extrait la valeur du premier attribut transform d'une chaîne", ->
+		output = sdc.getTransformAttr '<b transform="first">b</b><d transform="second"></d>'
+		output.should.deep.equal 'first'
 ###
-	it "extrait la valeur du premier attribut id d'une chaîne", ->
-		output = sdc.getId '<b id="firstId">b</b><d id="secondId"></d>'
-		output.should.deep.equal 'firstId'
 	it "supprime la valeur de l'identifiant dans la chaîne", ->
 		output = sdc.removeId '<b id="firstId">b</b>'
 		output.should.deep.equal '<b id="">b</b>'
