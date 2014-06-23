@@ -16,11 +16,10 @@ scope.loadFile = (fileName)->
 	fileContent.toString(encoding)
 scope.writeFile = (fileName, content)-> fs.writeFileSync fileName, content, {'encoding':encoding}
 scope.getDefs = (string)-> string.replace /([\s\S]*)<defs[^>]*>([\s\S]*)<\/defs>([\s\S]*)/im, '$2'
-scope.getId = (string)-> scope.getAttrValue string, 'id'
-scope.getTransformAttr = (string)-> scope.getAttrValue string, 'transform'
 scope.getAttrValue = (string,attr)->string.match(RegExp attr+'="([^"]*)"')[1]
-scope.removeId = (string)-> string.replace /id="([^"]*)"/, 'id=""'
-scope.injectId = (id, string)-> string.replace /id=""/, 'id="'+id+'"'
+scope.removeAttrContent = (string, attr)-> string.replace RegExp(attr+'="([^"]*)"'), attr+'=""'
+scope.injectId = (id, string)-> scope.injectAttrContent string, 'id', id
+scope.injectAttrContent = (string, attr, content)-> string.replace attr+'=""', attr+'="'+content+'"'
 scope.removeDuplicateDef = (duplicateString, fileContent)-> fileContent.replace duplicateString, ''
 
 
@@ -30,14 +29,12 @@ scope.listNodesWithAttr = (string, attr)->
 	node.toString() for node in nodes
 scope.listIdNodes = (string)->
 	scope.listNodesWithAttr string, 'id'
-scope.listTransformNodes = (string)->
-	scope.listNodesWithAttr string, 'transform'
-scope.mapRedudency = (list)->
+scope.mapRedundancyExceptAttr = (list, attr)->
 	map = {}
 	for element in list
 		do (element)->
-			key = scope.removeId element
-			value = scope.getId element
+			key = scope.removeAttrContent element, attr
+			value = scope.getAttrValue element, attr
 			if !map[key]
 				map[key] = [value]
 			else
@@ -60,12 +57,13 @@ scope.fixLink = (canonicalId, redundantId, fileContent)->
 		.replace(pattern2, 'href="#'+canonicalId+'"')
 
 scope.cleanSvgContent = (fileContent)->
-	redundancyMap = scope.cleanUnduplicated scope.mapRedudency scope.listIdNodes scope.getDefs fileContent
+	identifiedDef = scope.listIdNodes scope.getDefs fileContent
+	redundancyMap = scope.cleanUnduplicated scope.mapRedundancyExceptAttr identifiedDef,'id'
 	for redundantDef, occurrence of redundancyMap
 		do (redundantDef, occurrence)->
 			canonicalId = occurrence.shift()
 			for redundantId in occurrence
 				do (redundantId)->
-					fileContent = scope.removeDuplicateDef scope.injectId(redundantId, redundantDef), fileContent
+					fileContent = scope.removeDuplicateDef scope.injectAttrContent(redundantDef, 'id', redundantId), fileContent
 					fileContent = scope.fixLink(canonicalId, redundantId, fileContent)
 	return fileContent
