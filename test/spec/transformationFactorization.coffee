@@ -11,3 +11,16 @@ describe 'factorisation des transformations', ->
 	it "supprime le contenu de l'attribut transform dans la chaîne", ->
 		output = sdc.removeAttrContent '<b transform="first">b</b>', 'transform'
 		output.should.deep.equal '<b transform="">b</b>'
+	it "test la disponibilité d'un id", ->
+		sdc.isIdAvailable('a','<b id="a">b</b>').should.equal false
+		sdc.isIdAvailable('a','<b id="b">b</b>').should.equal true
+	it "retourne le prochain id disponible", ->
+		sdc.nextAvailableId('<b id="a">b</b>').should.equal 'b'
+#	it "construit une balise qui servira de références", ->
+#		return
+#	it "ajoute la balise de références aux defs", ->
+#		return
+#	it "construit une référence avec transformation", ->
+#		return
+#	it "ajoute la référence transformée à la place de la balise dupliquée", ->
+#		return

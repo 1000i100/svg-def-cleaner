@@ -67,3 +67,49 @@ scope.cleanSvgContent = (fileContent)->
 					fileContent = scope.removeDuplicateDef scope.injectAttrContent(redundantDef, 'id', redundantId), fileContent
 					fileContent = scope.fixLink(canonicalId, redundantId, fileContent)
 	return fileContent
+
+scope.Idrator = (init='9')->
+	_charMap = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	@next = =>
+		@_incrementLastIdSchema()
+		@_idSchema2id _lastIdSchema
+	@last = =>
+		@_idSchema2id _lastIdSchema
+
+	@_incrementIdSchema = (idSchema)=>
+		updatedSchema = idSchema.slice()
+		for curseur in [1.._charMap.length]
+			updatedSchema[updatedSchema.length-curseur] = (updatedSchema[updatedSchema.length-curseur]+1) % _charMap.length
+			if updatedSchema[updatedSchema.length-curseur]
+				break
+		if updatedSchema[0] == 0
+			updatedSchema[0] = 10
+			updatedSchema.push 0
+		return updatedSchema
+
+	@_id2idSchema = (id)=>
+		idSchema = []
+		id.split('').forEach (chr)->
+			position = 	_charMap.search chr
+			throw chr + ' incorrect chr as id part' if position == -1
+			idSchema.push position
+		return idSchema
+
+	_lastIdSchema = @_id2idSchema init
+	@_incrementLastIdSchema = ()=> _lastIdSchema = @_incrementIdSchema _lastIdSchema
+	@_idSchema2id = (idSchema)=>
+		id = ''
+		idSchema.forEach (charPos)->
+			id += _charMap.charAt charPos
+		return id
+	return @
+scope.nextId = (id)->
+	(new scope.Idrator id).next()
+scope.isIdAvailable = (id, fileContent)->
+	!RegExp(' id="'+id+'"').test fileContent
+scope.nextAvailableId = (fileContent)->
+	scope.nextAvailableId.idRator = new scope.Idrator('a') if !scope.nextAvailableId.idRator
+	id = scope.nextAvailableId.idRator.last()
+	return id if scope.isIdAvailable id, fileContent
+	scope.nextAvailableId.idRator.next()
+	return scope.nextAvailableId fileContent
