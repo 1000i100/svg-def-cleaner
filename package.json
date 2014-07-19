@@ -2,13 +2,13 @@
   "author": "Millicent Billette",
 	"contributors": "Aurore Sanchez",
 	"name": "svg-def-cleaner",
-  "description": "Detect and merge redundant definitions for lighter svg files",
+  "description": "Detect and merge redundant definitions and nodes for lighter svg files. Best use after svgo pre-optimisation.",
   "keywords": [
     "svg",
     "optimisation",
     "minification"
   ],
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "BSD, MIT, WTFPL, CC-BY, pick what you prefer",
   "repository": {
     "type": "git",
