@@ -57,6 +57,8 @@ scope.fixLink = (canonicalId, redundantId, fileContent)->
 		.replace(pattern2, 'href="#'+canonicalId+'"')
 
 scope.cleanSvgContent = (fileContent)->
+	return scope.cleanSvgTransform scope.cleanSvgDefContent fileContent
+scope.cleanSvgDefContent = (fileContent)->
 	identifiedDef = scope.listIdNodes scope.getDefs fileContent
 	redundancyMap = scope.cleanUnduplicated scope.mapRedundancyExceptAttr identifiedDef,'id'
 	for redundantDef, occurrence of redundancyMap
@@ -67,6 +69,20 @@ scope.cleanSvgContent = (fileContent)->
 					fileContent = scope.removeDuplicateDef scope.injectAttrContent(redundantDef, 'id', redundantId), fileContent
 					fileContent = scope.fixLink(canonicalId, redundantId, fileContent)
 	return fileContent
+scope.cleanSvgTransform = (fileContent)->
+	transformNodes = scope.listNodesWithAttr fileContent, 'transform'
+	redundancyMap = scope.cleanUnduplicated scope.mapRedundancyExceptAttr transformNodes,'transform'
+	for redundantNode, transformAttrList of redundancyMap
+		do (redundantNode, transformAttrList)->
+			canonicalNode = scope.canonicalize redundantNode, fileContent
+			id = scope.getAttrValue canonicalNode, 'id'
+			fileContent = scope.append2Node 'defs', canonicalNode, fileContent
+			for transformAttr in transformAttrList
+				do (transformAttr)->
+					refNode = scope.createTransformUseNode id, transformAttr
+					duplicatedNode = scope.injectAttrContent(redundantNode, 'transform', transformAttr)
+					fileContent = scope.replaceNode duplicatedNode, refNode, fileContent
+	return fileContent
 
 scope.Idrator = (init='9')->
 	_charMap = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -74,6 +90,7 @@ scope.Idrator = (init='9')->
 		@_incrementLastIdSchema()
 		@_idSchema2id _lastIdSchema
 	@last = =>
+		@_incrementLastIdSchema() if '9' == @_idSchema2id _lastIdSchema
 		@_idSchema2id _lastIdSchema
 
 	@_incrementIdSchema = (idSchema)=>
@@ -108,8 +125,17 @@ scope.nextId = (id)->
 scope.isIdAvailable = (id, fileContent)->
 	!RegExp(' id="'+id+'"').test fileContent
 scope.nextAvailableId = (fileContent)->
-	scope.nextAvailableId.idRator = new scope.Idrator('a') if !scope.nextAvailableId.idRator
+	scope.nextAvailableId.idRator = new scope.Idrator() if !scope.nextAvailableId.idRator
 	id = scope.nextAvailableId.idRator.last()
 	return id if scope.isIdAvailable id, fileContent
 	scope.nextAvailableId.idRator.next()
 	return scope.nextAvailableId fileContent
+scope.canonicalize = (string, fileContent)->
+	id = scope.nextAvailableId fileContent
+	return string.replace 'transform=""','id="'+id+'"'
+scope.append2Node = (nodeName, string2append, fileContent)->
+	return fileContent.replace '</'+nodeName+'>', string2append+'</'+nodeName+'>'
+scope.createTransformUseNode = (id, transformContent)->
+	return '<use xlink:href="#'+id+'" transform="'+transformContent+'"/>'
+scope.replaceNode = (beforeNode, afterNode, fileContent)->
+	return fileContent.split(beforeNode).join(afterNode)
