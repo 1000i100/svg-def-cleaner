@@ -8,7 +8,7 @@ How to use
 First step, installation.
 Be sure to have node.js installed on your system then :
 ```sh
-npm install -g svg-dev-cleaner
+npm install -g svg-def-cleaner
 ```
 
 To clean a svg file juste write in your shell :
